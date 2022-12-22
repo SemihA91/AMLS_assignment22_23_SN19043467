@@ -133,3 +133,4 @@ Datasets/cartoon_set
 Datasets/celeba
 Datasets/cartoon_set_test
 Datasets/celeba_test
+test.py

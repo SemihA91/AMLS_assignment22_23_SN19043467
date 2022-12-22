@@ -8,3 +8,10 @@ dependencies:
     - pandas
     - matplotlib
     - scikit-learn
+    - cmake
+    - opencv-python
+    - keras
+    - tensorflow
+
+  - conda:
+    - dlib
