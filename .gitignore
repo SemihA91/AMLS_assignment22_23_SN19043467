@@ -134,6 +134,3 @@ Datasets/celeba
 Datasets/cartoon_set_test
 Datasets/celeba_test
 test.py
-
-# Large files
-A1/shape_predictor_68_face_landmarks.dat
