@@ -10,9 +10,9 @@ import pandas as pd
 # PATH TO ALL IMAGES
 global basedir, image_paths, target_size
 # basedir = os.path.abspath(os.path.join('./Datasets', os.pardir))
-basedir = './Datasets'
-images_dir = os.path.join(basedir,'celeba\img')
-labels_filename = 'celeba\labels.csv'
+# basedir = './Datasets'
+# images_dir = os.path.join(basedir,'celeba\img')
+# labels_filename = 'celeba\labels.csv'
 
 detector = dlib.get_frontal_face_detector()
 predictor_path = os.path.join(os.sys.path[0], 'A1\shape_predictor_68_face_landmarks.dat')
@@ -106,10 +106,10 @@ def run_dlib_shape(image):
 
     return dlibout, resized_image
 
-def extract_features_labels():
+def extract_features_labels(basedir, images_dir, labels_filename):
     """
-    This funtion extracts the landmarks features for all images in the folder 'dataset/celeba'.
-    It also extracts the gender label for each image.
+    This funtion extracts the landmarks features for all images in the folder provided by 'images_dir'.
+    It also extracts the gender label for each image from the folder passed in by 'labels_filename'.
     :return:
         landmark_features:  an array containing 68 landmark points for each image in which a face was detected
         gender_labels:      an array containing the gender label (male=0 and female=1) for each image in
@@ -120,12 +120,14 @@ def extract_features_labels():
     labels_file = open(os.path.join(basedir, labels_filename), 'r')
     lines = labels_file.readlines()
     gender_labels = {get_filename(line.replace('"','').replace("'",'')): get_gender(line) for line in lines[1:]}
+   
+    print(gender_labels)
     if os.path.isdir(images_dir):
         all_features = []
         all_labels = []
         for idx, img_path in enumerate(image_paths):
-            print('Processing image {}'.format(idx+1))
             file_name= img_path.split('\\')[-1]
+            print('Processing {}...'.format(file_name))
             # load image
             img = image.image_utils.img_to_array(
                 image.image_utils.load_img(img_path,
@@ -135,14 +137,14 @@ def extract_features_labels():
             if features is not None:
                 all_features.append(features)
                 all_labels.append(gender_labels[file_name])
-                print(file_name, gender_labels[file_name])
+                # print(file_name, gender_labels[file_name])
             
-            if idx == 10:
-                print('HIT 10, STOPPING TO MAKE IT FASTER')
+            if idx == 20:
+                print('HIT {}, STOPPING TO MAKE IT FASTER'.format(idx))
                 break
 
     landmark_features = np.array(all_features)
     all_labels = [(label + 1)/2 for label in all_labels]
-    gender_labels = (np.array(all_labels)) # simply converts the -1 into 0, so male=0 and female=1
+    gender_labels = (np.array(all_labels))
     return landmark_features, gender_labels
 
