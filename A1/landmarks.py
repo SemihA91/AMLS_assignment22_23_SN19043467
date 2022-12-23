@@ -135,12 +135,14 @@ def extract_features_labels():
             if features is not None:
                 all_features.append(features)
                 all_labels.append(gender_labels[file_name])
+                print(file_name, gender_labels[file_name])
             
             if idx == 10:
-                print('HIT 100, STOPPING TO MAKE IT FASTER')
+                print('HIT 10, STOPPING TO MAKE IT FASTER')
                 break
 
     landmark_features = np.array(all_features)
-    gender_labels = (np.array(all_labels) + 1)/2 # simply converts the -1 into 0, so male=0 and female=1
+    all_labels = [(label + 1)/2 for label in all_labels]
+    gender_labels = (np.array(all_labels)) # simply converts the -1 into 0, so male=0 and female=1
     return landmark_features, gender_labels
 
