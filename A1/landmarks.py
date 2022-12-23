@@ -4,6 +4,7 @@ from keras.preprocessing import image
 import cv2
 import dlib
 import tensorflow as tf
+import pandas as pd
 
 
 # PATH TO ALL IMAGES
@@ -31,8 +32,8 @@ predictor = dlib.shape_predictor(predictor_path)
 #     300 faces In-the-wild challenge: Database and results.
 #     Image and Vision Computing (IMAVIS), Special Issue on Facial Landmark Localisation "In-The-Wild". 2016.
 def get_gender(line):
-    split = line.split('jpg')[-1]
-    if split[0] == '-':
+    split = line.split('\t')
+    if split[-2] == '-1':
         return -1
     return 1
 
@@ -119,7 +120,6 @@ def extract_features_labels():
     labels_file = open(os.path.join(basedir, labels_filename), 'r')
     lines = labels_file.readlines()
     gender_labels = {get_filename(line.replace('"','').replace("'",'')): get_gender(line) for line in lines[1:]}
-
     if os.path.isdir(images_dir):
         all_features = []
         all_labels = []
@@ -136,7 +136,7 @@ def extract_features_labels():
                 all_features.append(features)
                 all_labels.append(gender_labels[file_name])
             
-            if idx == 100:
+            if idx == 10:
                 print('HIT 100, STOPPING TO MAKE IT FASTER')
                 break
 
