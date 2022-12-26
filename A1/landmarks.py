@@ -137,9 +137,9 @@ def extract_features_labels(basedir, images_dir, labels_filename):
                 all_labels.append(gender_labels[file_name])
                 # print(file_name, gender_labels[file_name])
             
-            if idx == 100:
-                print('HIT {}, STOPPING TO MAKE IT FASTER'.format(idx))
-                break
+            # if idx == 100:
+            #     print('HIT {}, STOPPING TO MAKE IT FASTER'.format(idx))
+            #     break
 
     landmark_features = np.array(all_features)
     all_labels = [(label + 1)/2 for label in all_labels]

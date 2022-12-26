@@ -18,10 +18,8 @@ def img_SVM(x_train, y_train, x_test, y_test):
     classifier = SVC()
     classifier.fit(x_train, y_train)
     pred = classifier.predict(x_test)
-    print(len(y_test))
-    print(len(pred))
-    print("Accuracy:", accuracy_score(y_test, pred))
-    print('Classification report', classification_report(y_test, pred))
+    print("\nAccuracy:", accuracy_score(y_test, pred))
+    print('Classification report\n', classification_report(y_test, pred, zero_division=0))
     tn, fp, fn, tp = confusion_matrix(y_test, pred).ravel()
     print('True Negatives: {}, False Positives: {}, False Negatives: {}, True Positives: {} '.format(tn, fp, fn, tp))
     return pred
