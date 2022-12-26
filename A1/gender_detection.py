@@ -21,6 +21,9 @@ def img_SVM(x_train, y_train, x_test, y_test):
     print(len(y_test))
     print(len(pred))
     print("Accuracy:", accuracy_score(y_test, pred))
+    print('Classification report', classification_report(y_test, pred))
+    tn, fp, fn, tp = confusion_matrix(y_test, pred).ravel()
+    print('True Negatives: {}, False Positives: {}, False Negatives: {}, True Positives: {} '.format(tn, fp, fn, tp))
     return pred
 
 def test():
@@ -29,7 +32,6 @@ def test():
     y_train = np.array([int(y) for y in y_train])
     y_test = np.array([int(y) for y in y_test])
     pred=img_SVM(x_train.reshape((x_train.shape[0], 68*2)), y_train, x_test.reshape((x_test.shape[0], 68*2)), y_test)
-    print(pred)
 
     #print(len(x_test))
     # print(len(y_test)) 
