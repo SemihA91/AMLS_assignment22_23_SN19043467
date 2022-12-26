@@ -120,8 +120,6 @@ def extract_features_labels(basedir, images_dir, labels_filename):
     labels_file = open(os.path.join(basedir, labels_filename), 'r')
     lines = labels_file.readlines()
     gender_labels = {get_filename(line.replace('"','').replace("'",'')): get_gender(line) for line in lines[1:]}
-   
-    print(gender_labels)
     if os.path.isdir(images_dir):
         all_features = []
         all_labels = []
@@ -139,9 +137,9 @@ def extract_features_labels(basedir, images_dir, labels_filename):
                 all_labels.append(gender_labels[file_name])
                 # print(file_name, gender_labels[file_name])
             
-            if idx == 20:
-                print('HIT {}, STOPPING TO MAKE IT FASTER'.format(idx))
-                break
+            # if idx == 100:
+            #     print('HIT {}, STOPPING TO MAKE IT FASTER'.format(idx))
+            #     break
 
     landmark_features = np.array(all_features)
     all_labels = [(label + 1)/2 for label in all_labels]
