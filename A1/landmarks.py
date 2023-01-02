@@ -5,6 +5,7 @@ import cv2
 import dlib
 import tensorflow as tf
 import pandas as pd
+import json
 
 
 # PATH TO ALL IMAGES
@@ -106,7 +107,7 @@ def run_dlib_shape(image):
 
     return dlibout, resized_image
 
-def extract_features_labels(basedir, images_dir, labels_filename):
+def extract_features_labels(basedir, images_dir, labels_filename, testing):
     """
     This funtion extracts the landmarks features for all images in the folder provided by 'images_dir'.
     It also extracts the gender label for each image from the folder passed in by 'labels_filename'.
@@ -135,14 +136,37 @@ def extract_features_labels(basedir, images_dir, labels_filename):
             if features is not None:
                 all_features.append(features)
                 all_labels.append(gender_labels[file_name])
-                # print(file_name, gender_labels[file_name])
             
-            # if idx == 100:
+            # if idx == 20:
             #     print('HIT {}, STOPPING TO MAKE IT FASTER'.format(idx))
             #     break
 
-    landmark_features = np.array(all_features)
+    
+    # all_features = [list(feature) for feature in all_features]
+    # print(type(all_labels))
+    # print(type(all_features[0]))
+    # print(all_features[0])
+    all_features = [feature.tolist() for feature in all_features]
     all_labels = [(label + 1)/2 for label in all_labels]
+
+    data = {
+        'features': all_features,
+        'labels': all_labels
+    }
+
+    if testing:
+        filename = 'A1/test_data.json'
+    else:
+        filename = 'A1/training_data.json'
+    
+    outfile = open(filename, 'w')
+    json.dump(data, outfile, indent= 3)
+    outfile.close()
+
+  
+    landmark_features = np.array(all_features)
+    # all_labels = [(label + 1)/2 for label in all_labels]
     gender_labels = (np.array(all_labels))
+
     return landmark_features, gender_labels
 
