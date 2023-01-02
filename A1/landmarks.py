@@ -33,19 +33,40 @@ predictor = dlib.shape_predictor(predictor_path)
 #     300 faces In-the-wild challenge: Database and results.
 #     Image and Vision Computing (IMAVIS), Special Issue on Facial Landmark Localisation "In-The-Wild". 2016.
 def get_gender(line):
+    """Gets gender label from line of CSV
+
+    Args:
+        line: line from CSV file
+    Returns: 
+        label value of 1 or -1 for female and male accordingly
+    """
     split = line.split('\t')
     if split[-2] == '-1':
         return -1
     return 1
 
 def get_filename(line):
+    """Gets filename from line of CSV
+
+    Args:
+        line: line from CSV
+    Returns:
+        filename: string representing filename of images 
+    """
     split = line.split('.')[0]
     split = split[:len(split)//2]
     filename = split + '.jpg'
     return filename
 
-
 def shape_to_np(shape, dtype="int"):
+    """Converts list of x, y coordinates to 2-tuple
+
+    Args:
+        shape: dlib shape
+        dtype: data type
+    Returns:
+        coords: 2-tuple of x, y coordinates of facial landmarks
+    """
     # initialize the list of (x, y)-coordinates
     coords = np.zeros((shape.num_parts, 2), dtype=dtype)
 
@@ -58,6 +79,13 @@ def shape_to_np(shape, dtype="int"):
     return coords
 
 def rect_to_bb(rect):
+    """Converts dlib bounding to (x, y, w, h) format
+
+    Args:
+        rect: dlib rectangle boundary
+    Returns:
+        (x, y, w, h): bounding box format
+    """
     # take a bounding predicted by dlib and convert it
     # to the format (x, y, w, h) as we would normally do
     # with OpenCV
@@ -69,10 +97,18 @@ def rect_to_bb(rect):
     # return a tuple of (x, y, w, h)
     return (x, y, w, h)
 
-
 def run_dlib_shape(image):
-    # in this function we load the image, detect the landmarks of the face, and then return the image and the landmarks
-    # load the input image, resize it, and convert it to grayscale
+    """Returns image and facial landmarks
+
+    Loads the image, detects the landmarks of the face, and returns the image and the landmarks
+
+    Args:
+        image: array representing image
+    Returns:
+        dlibout: array representing facial landmarks
+        resised_image: array representing resized image
+    """
+
     resized_image = image.astype('uint8')
 
     gray = cv2.cvtColor(resized_image, cv2.COLOR_BGR2GRAY)
@@ -108,12 +144,21 @@ def run_dlib_shape(image):
     return dlibout, resized_image
 
 def extract_features_labels(basedir, images_dir, labels_filename, testing):
-    """
-    This funtion extracts the landmarks features for all images in the folder provided by 'images_dir'.
+    """Extracts facial landmarks from images in images_dir and saves to json_file
+
+    Extracts the landmarks features for all images in the folder provided by 'images_dir'.
     It also extracts the gender label for each image from the folder passed in by 'labels_filename'.
-    :return:
-        landmark_features:  an array containing 68 landmark points for each image in which a face was detected
-        gender_labels:      an array containing the gender label (male=0 and female=1) for each image in
+    These are saved in a json file.
+
+    Args:
+        basedir: base directory of images
+        images_dir: directory of images
+        labels_filename: directory of file containing labels for images
+        testing: boolean denoting whether data is test or train data
+
+    Returns:
+        landmark_features: array containing 68 landmark points for each image in which a face was detected
+        gender_labels: an array containing the gender label (male=0 and female=1) for each image in
                             which a face was detected
     """
     image_paths = [os.path.join(images_dir, l) for l in os.listdir(images_dir)]
@@ -141,16 +186,11 @@ def extract_features_labels(basedir, images_dir, labels_filename, testing):
             #     print('HIT {}, STOPPING TO MAKE IT FASTER'.format(idx))
             #     break
 
-    
-    # all_features = [list(feature) for feature in all_features]
-    # print(type(all_labels))
-    # print(type(all_features[0]))
-    # print(all_features[0])
     all_features = [feature.tolist() for feature in all_features]
     all_labels = [(label + 1)/2 for label in all_labels]
 
     data = {
-        'features': all_features,
+        'features': [feature.tolist() for feature in all_features],
         'labels': all_labels
     }
 
@@ -158,15 +198,11 @@ def extract_features_labels(basedir, images_dir, labels_filename, testing):
         filename = 'A1/test_data.json'
     else:
         filename = 'A1/training_data.json'
-    
+
     outfile = open(filename, 'w')
     json.dump(data, outfile, indent= 3)
     outfile.close()
-
-  
     landmark_features = np.array(all_features)
-    # all_labels = [(label + 1)/2 for label in all_labels]
     gender_labels = (np.array(all_labels))
-
     return landmark_features, gender_labels
 
