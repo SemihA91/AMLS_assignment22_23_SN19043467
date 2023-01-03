@@ -19,6 +19,26 @@ train_labels_filename = 'celeba\labels.csv'
 test_images_dir = os.path.join(basedir, 'celeba_test\img')
 test_labels_filename = 'celeba_test\labels.csv'
 
+# def visaulise_data(x_train, y_train):
+#     x_male = []
+#     y_male = []
+#     x_female = []
+#     y_female = []
+#     for image, label in zip(x_train, y_train):
+#         for point in image:
+#             if label == 0:
+#                 x_male.append(point[0])
+#                 y_male.append(point[1])
+#             else:
+#                 x_female.append(point[0])
+#                 y_female.append(point[1])
+
+#     plt.figure()
+#     plt.scatter(x_male, y_male, marker='.')
+#     plt.scatter(x_female, y_female, marker='.')
+#     plt.show()
+#     return 
+
 
 def get_model_params(x_train, y_train, x_test, y_test):
     classifier = SVC()
@@ -60,7 +80,8 @@ def run_classifier():
         testing_data = json.load(test)
         x_test = np.array(testing_data['features'])
         y_test = np.array(testing_data['labels'])
-    
+    # print(x_train[0])
+    # visaulise_data(x_train, y_train)
     img_SVM(x_train.reshape((x_train.shape[0], 68*2)), y_train, x_test.reshape((x_test.shape[0], 68*2)), y_test)
 
  

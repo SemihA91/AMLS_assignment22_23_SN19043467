@@ -8,7 +8,6 @@ def create_datasets_dir():
 
 def main():
     create_datasets_dir()
-    a1.get_model_params() # Can uncomment to perform CV to get best SVM hyperparamters
     a1.run_classifier()
     
 
