@@ -1,9 +1,6 @@
 from . import landmarks
 import os
 import numpy as np
-import sklearn
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix, classification_report, accuracy_score
 from sklearn.svm import SVC
 import matplotlib.pyplot as plt
@@ -41,6 +38,17 @@ test_labels_filename = 'celeba_test\labels.csv'
 
 
 def get_model_params(x_train, y_train, x_test, y_test):
+    """Set optimals SVM parameters 
+
+    Utilises Sklearn GridSearch to find optimal SVM paramters using lists of 
+    provided parameters
+
+    Args:
+        x_train: Array of training data
+        y_train: Array of training labels
+        x_test: Array of test data
+        y_test: Array of test labels to compare model against
+    """
     classifier = SVC()
     param_grid = {'C': [0.01, 0.1, 1], 
               'gamma': [1, 0.1, 0.01, 0.001, 0.0001],
@@ -57,6 +65,17 @@ def get_model_params(x_train, y_train, x_test, y_test):
 
 
 def img_SVM(x_train, y_train, x_test, y_test):
+    """Retuns prediction using provided data and SVM classifier
+
+    Args:
+        x_train: Array of training data
+        y_train: Array of training labels
+        x_test: Array of test data
+        y_test: Array of test labels to compare model against
+    Returns:
+        pred: array of predictions formed from SVM using traning data
+    """
+
     classifier = SVC(C=0.01, kernel='linear', gamma=1)
     classifier.fit(x_train, y_train)
     pred = classifier.predict(x_test)
@@ -80,7 +99,7 @@ def run_classifier():
         testing_data = json.load(test)
         x_test = np.array(testing_data['features'])
         y_test = np.array(testing_data['labels'])
-    # print(x_train[0])
+
     # visaulise_data(x_train, y_train)
     img_SVM(x_train.reshape((x_train.shape[0], 68*2)), y_train, x_test.reshape((x_test.shape[0], 68*2)), y_test)
 
