@@ -1,4 +1,4 @@
-from . import landmarks
+from . import gender_landmarks
 import os
 import numpy as np
 from sklearn.metrics import confusion_matrix, classification_report, accuracy_score
@@ -16,27 +16,6 @@ train_labels_filename = 'celeba\labels.csv'
 test_images_dir = os.path.join(basedir, 'celeba_test\img')
 test_labels_filename = 'celeba_test\labels.csv'
 
-# def visaulise_data(x_train, y_train):
-#     x_male = []
-#     y_male = []
-#     x_female = []
-#     y_female = []
-#     for image, label in zip(x_train, y_train):
-#         for point in image:
-#             if label == 0:
-#                 x_male.append(point[0])
-#                 y_male.append(point[1])
-#             else:
-#                 x_female.append(point[0])
-#                 y_female.append(point[1])
-
-#     plt.figure()
-#     plt.scatter(x_male, y_male, marker='.')
-#     plt.scatter(x_female, y_female, marker='.')
-#     plt.show()
-#     return 
-
-
 def get_model_params(x_train, y_train, x_test, y_test):
     """Set optimals SVM parameters 
 
@@ -50,9 +29,14 @@ def get_model_params(x_train, y_train, x_test, y_test):
         y_test: Array of test labels to compare model against
     """
     classifier = SVC()
-    param_grid = {'C': [0.01, 0.1, 1], 
-              'gamma': [1, 0.1, 0.01, 0.001, 0.0001],
-              'kernel': ['linear']} 
+    param_grid = [{'C': [0.01, 0.1, 1], 
+              'gamma': [0.1, 0.01, 0.001, 0.0001],
+              'kernel': ['linear', 'rbf']},
+              {'C': [0.01, 0.1, 1], 
+                'kernel': ['poly'],
+                'degree': [3, 4, 5]
+              }]
+
   
     grid = GridSearchCV(classifier, param_grid, refit = True, verbose = 3)
     grid.fit(x_train, y_train)
@@ -64,8 +48,8 @@ def get_model_params(x_train, y_train, x_test, y_test):
     return
 
 
-def img_SVM(x_train, y_train, x_test, y_test):
-    """Retuns prediction using provided data and SVM classifier
+def A1_SVM(x_train, y_train, x_test, y_test):
+    """Retuns prediction using provided data and SVM classifier for task A1
 
     Args:
         x_train: Array of training data
@@ -76,8 +60,9 @@ def img_SVM(x_train, y_train, x_test, y_test):
         pred: array of predictions formed from SVM using traning data
     """
 
-    classifier = SVC(C=0.01, kernel='linear', gamma=1)
+    classifier = SVC(C=0.1, kernel='poly', degree=4)
     classifier.fit(x_train, y_train)
+    print(classifier._gamma)
     pred = classifier.predict(x_test)
     print("\nAccuracy:", accuracy_score(y_test, pred))
     print('Classification report\n', classification_report(y_test, pred, zero_division=0))
@@ -87,8 +72,8 @@ def img_SVM(x_train, y_train, x_test, y_test):
 
 def run_classifier():
     if not os.path.exists('A1/training_data.json'):
-        x_train, y_train = landmarks.extract_features_labels(basedir, train_images_dir, train_labels_filename, testing=False)
-        x_test, y_test = landmarks.extract_features_labels(basedir, test_images_dir, test_labels_filename, testing=True)
+        x_train, y_train = gender_landmarks.extract_features_labels(basedir, train_images_dir, train_labels_filename, testing=False)
+        x_test, y_test = gender_landmarks.extract_features_labels(basedir, test_images_dir, test_labels_filename, testing=True)
     
     else:
         train = open('A1/training_data.json')
@@ -100,7 +85,12 @@ def run_classifier():
         x_test = np.array(testing_data['features'])
         y_test = np.array(testing_data['labels'])
 
-    # visaulise_data(x_train, y_train)
-    img_SVM(x_train.reshape((x_train.shape[0], 68*2)), y_train, x_test.reshape((x_test.shape[0], 68*2)), y_test)
+    x_train = x_train.reshape((x_train.shape[0], 68*2))
+    x_test = x_test.reshape((x_test.shape[0], 68*2))
+
+    # get_model_params(x_train, y_train, x_test, y_test) # Cross validation to obtain the best model, 
+                                                    # UNCOMMENT TO RUN as it has a considerable runtime
+
+    A1_SVM(x_train, y_train, x_test, y_test)
 
  

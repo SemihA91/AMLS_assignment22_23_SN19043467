@@ -8,13 +8,6 @@ import pandas as pd
 import json
 
 
-# PATH TO ALL IMAGES
-global basedir, image_paths, target_size
-# basedir = os.path.abspath(os.path.join('./Datasets', os.pardir))
-# basedir = './Datasets'
-# images_dir = os.path.join(basedir,'celeba\img')
-# labels_filename = 'celeba\labels.csv'
-
 detector = dlib.get_frontal_face_detector()
 predictor_path = os.path.join(os.sys.path[0], 'A1\shape_predictor_68_face_landmarks.dat')
 predictor = dlib.shape_predictor(predictor_path)
@@ -181,10 +174,6 @@ def extract_features_labels(basedir, images_dir, labels_filename, testing):
             if features is not None:
                 all_features.append(features)
                 all_labels.append(gender_labels[file_name])
-            
-            # if idx == 20:
-            #     print('HIT {}, STOPPING TO MAKE IT FASTER'.format(idx))
-            #     break
 
     all_features = [feature.tolist() for feature in all_features]
     all_labels = [(label + 1)/2 for label in all_labels]
@@ -193,7 +182,7 @@ def extract_features_labels(basedir, images_dir, labels_filename, testing):
         'features': [feature.tolist() for feature in all_features],
         'labels': all_labels
     }
-
+    
     if testing:
         filename = 'A1/test_data.json'
     else:
