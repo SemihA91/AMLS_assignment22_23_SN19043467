@@ -1,4 +1,5 @@
 from A1 import gender_detection as a1
+from A2 import emotion_detection as a2
 import os
 
 def create_datasets_dir():   
@@ -8,8 +9,11 @@ def create_datasets_dir():
 
 def main():
     create_datasets_dir()
-    a1.run_classifier()
-    
+    #a1.run_classifier()
+    a2.run_classifier() 
+       
+    # a3.run_classifier()
+    # a4.run_classifier()
 
 if __name__ == "__main__":
     main()
