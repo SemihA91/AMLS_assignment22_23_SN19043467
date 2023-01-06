@@ -1,11 +1,9 @@
 from B1 import feature_extraction
 import os
-import json
 import numpy as np
 import keras
-from keras.preprocessing import image
-import cv2
-import tensorflow as tf
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
 
 
 basedir = './Datasets'
@@ -15,6 +13,13 @@ train_labels_filename = 'cartoon_set\labels.csv'
 test_images_dir = os.path.join(basedir, 'cartoon_set_test\img')
 test_labels_filename = 'cartoon_set_test\labels.csv'
 
+def plot_performance(history):
+    plt.plot(history.history['accuracy'])
+    plt.plot(history.history['val_accuracy'])
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.legend(['train', 'validation'])
+    plt.show()
 
 
 def run_classifier():
@@ -27,11 +32,14 @@ def run_classifier():
 
     x_train = x_train.reshape(x_train.shape[0], 500*500*3)
     x_test = x_test.reshape(x_test.shape[0], 500*500*3)
+    y_train = y_train.astype(int)
+    y_test = y_test.astype(int)
+
+    x_train, x_validation, y_train, y_validation = train_test_split(x_train, y_train, test_size=0.2, random_state=1)
     # x_train = x_train/255
     # x_test = x_test/255
 
-    y_train = y_train.astype(int)
-    y_test = y_test.astype(int)
+    
     model = keras.Sequential()
     model.add(keras.layers.Dense(5, input_shape=(750000,), activation='sigmoid', ))
 
@@ -40,7 +48,8 @@ def run_classifier():
         loss='sparse_categorical_crossentropy',
         metrics=['accuracy']
     )
-    hist = model.fit(x_train, y_train, epochs=5)
-
+    hist = model.fit(x_train, y_train, epochs=25, validation_data=(x_validation, y_validation))
+    plot_performance(hist)
     predicted = model.predict(x_test)
     test_error, test_accuracy = model.evaluate(x_test, y_test, verbose=1)
+    print('Test error: {}, Test accuracy: {}'.format(test_error, test_accuracy))
