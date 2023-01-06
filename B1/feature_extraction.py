@@ -1,5 +1,9 @@
 import os 
 from keras.preprocessing import image
+import cv2
+import json
+import numpy as np
+import dlib
 
 def get_filename(line):
     split = line.split('\t')
@@ -10,6 +14,11 @@ def get_face_shape_label(line):
     split = line.split('\t')
     shape = split[-2]
     return shape
+
+def get_grey_image(image):
+    image = image.astype('uint8')
+    grey_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY).astype('uint8')
+    return grey_image
 
 def get_labels(basedir, images_dir, labels_filename, testing):
     image_paths = [os.path.join(images_dir, l) for l in os.listdir(images_dir)]
@@ -23,16 +32,17 @@ def get_labels(basedir, images_dir, labels_filename, testing):
         all_labels = []
         for idx, img_path in enumerate(image_paths):
             file_name= img_path.split('\\')[-1]
-            print(file_name)
+            # print('{}% processed'.format(round((idx+1)/(len(image_paths)+1)*100, 4)))
             img_data = image.image_utils.img_to_array(
                 image.image_utils.load_img(img_path,
                                target_size=target_size,
-                               interpolation='bicubic'))
-            print(img_data.shape)
-            if idx == 0:
-                break
+                               interpolation='bicubic')).astype('uint8')
+            # img_data = get_grey_image(img_data)
 
+            all_features.append(img_data)
+            all_labels.append(face_shape_labels[file_name])
+            progress = round((idx+1)/(len(image_paths)+1)*100, 1)
+            if progress % 5 == 0:
+                print('Progress = {}'.format(progress))
 
-
-    # print(list(face_shape_labels.keys())[:10], list(face_shape_labels.values())[:10])
-    return
+    return np.array(all_features), np.array(all_labels)
