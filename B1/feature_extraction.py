@@ -33,16 +33,23 @@ def get_labels(basedir, images_dir, labels_filename, testing):
         for idx, img_path in enumerate(image_paths):
             file_name= img_path.split('\\')[-1]
             # print('{}% processed'.format(round((idx+1)/(len(image_paths)+1)*100, 4)))
-            img_data = image.image_utils.img_to_array(
-                image.image_utils.load_img(img_path,
-                               target_size=target_size,
-                               interpolation='bicubic')).astype('uint8')
-            # img_data = get_grey_image(img_data)
+            # img_data = image.image_utils.img_to_array(
+            #     image.image_utils.load_img(img_path,
+            #                    target_size=target_size,
+            #                    interpolation='bicubic')).astype('uint8')
+            ### img_data = get_grey_image(img_data)
 
+
+            # img_data = image.image_utils.load_img(img_path,
+            #                    target_size=target_size,
+            #                    interpolation='bicubic')
+            img_data = cv2.imread(img_path)
+            img_data = cv2.resize(img_data, (125,125))
+            
             all_features.append(img_data)
             all_labels.append(face_shape_labels[file_name])
             progress = round((idx+1)/(len(image_paths)+1)*100, 1)
             if progress % 5 == 0:
                 print('Progress = {}'.format(progress))
 
-    return np.array(all_features), np.array(all_labels)
+    return np.array(all_features), np.array(all_labels).astype(int)
