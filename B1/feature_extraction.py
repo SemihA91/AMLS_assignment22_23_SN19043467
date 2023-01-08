@@ -45,6 +45,7 @@ def get_labels(basedir, images_dir, labels_filename, testing):
             #                    interpolation='bicubic')
             img_data = cv2.imread(img_path)
             img_data = cv2.resize(img_data, (125,125))
+            img_data = cv2.cvtColor(img_data, cv2.COLOR_BGR2GRAY)
             
             all_features.append(img_data)
             all_labels.append(face_shape_labels[file_name])

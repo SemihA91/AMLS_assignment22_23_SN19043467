@@ -14,25 +14,14 @@ train_labels_filename = 'cartoon_set\labels.csv'
 
 test_images_dir = os.path.join(basedir, 'cartoon_set_test\img')
 test_labels_filename = 'cartoon_set_test\labels.csv'
-# np.random.seed(3)
 
 def plot_performance(history):
-    plt.figure()
     plt.plot(history.history['accuracy'])
     plt.plot(history.history['val_accuracy'])
     plt.xlabel('Epoch')
     plt.ylabel('Accuracy')
     plt.legend(['train', 'validation'])
-    plt.savefig('B1/accuracy.png')
-
-    plt.figure()
-    plt.plot(history.history['loss'])
-    plt.plot(history.history['val_loss'])
-    plt.xlabel('Epoch')
-    plt.ylabel('Loss')
-    plt.legend(['train', 'validation'])
-    plt.savefig('B1/losses.png')
-
+    plt.savefig('B1/TRAININGFIG.png')
 
 def get_label_split(labels, train):
     zero = np.sum(labels == 0)
@@ -47,27 +36,19 @@ def get_label_split(labels, train):
         print('TEST: Zeros: {}, Ones: {}, Twos: {}, Threes: {}, Fours: {}'.format(zero, one, two, three, four))
 
 def process_data(x_train, y_train, x_test, test_size):
-    x_train, x_validation, y_train, y_validation = train_test_split(x_train, y_train, test_size=0.2, random_state=1, stratify=y_train)
+    x_train, x_validation, y_train, y_validation = train_test_split(x_train, y_train, test_size=0.2, random_state=1)
     x_train = np.array(x_train)/255
     x_test = np.array(x_test)/255
     x_validaton = np.array(x_validation)/255
 
     return x_train, x_validation, y_train, y_validation
 
-def get_ann():
+def get_ann(activation, optimizer, learning_rate, epochs):
     model = keras.Sequential()
-    model.add(keras.layers.Flatten(input_shape=(125,125,1)))
+    model.add(keras.layers.Flatten(input_shape=(125,125,3)))
     model.add(keras.layers.Dense(5, activation='softmax'))
     return model
 
-def get_cnn():
-    model = keras.Sequential()
-    model.add(keras.layers.Conv2D(filters=32, kernel_size=(3,3), activation='relu', input_shape=(125,125,1)))
-    model.add(keras.layers.MaxPooling2D((2,2)))
-    model.add(keras.layers.Flatten())
-    model.add(keras.layers.Dropout(0.5))
-    model.add(keras.layers.Dense(5, activation='softmax'))
-    return model
 
 def run_classifier():
 
@@ -79,15 +60,20 @@ def run_classifier():
 
     x_train, x_validation, y_train, y_validation = process_data(x_train, y_train, x_test, test_size=0.2)
 
+
+    epochs = range(5, 21, 2)
+    learning_rates = [0.1 0.01 0.001 0.0001]
+
+
+
     model = get_ann()
-    # model = get_cnn()
+
     model.compile(
-        optimizer=keras.optimizers.Adam(learning_rate=0.01),
+        optimizer=keras.optimizers.Adam(learning_rate=0.001),
         loss='sparse_categorical_crossentropy',
         metrics=['accuracy']
     )
-    hist = model.fit(x_train, y_train, epochs=25, validation_data=(x_validation, y_validation))
-    plot_performance(hist)
+    hist = model.fit(x_train, y_train, epochs=15, validation_data=(x_validation, y_validation))
     predicted = model.predict(x_test)
     predicted_labels = [np.argmax(label) for label in predicted]
 
