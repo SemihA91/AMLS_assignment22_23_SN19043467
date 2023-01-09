@@ -12,6 +12,8 @@ dependencies:
     - opencv-python
     - keras
     - tensorflow
+    - scikit-image
+    - seaborn
 
   - conda:
     - dlib

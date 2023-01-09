@@ -34,7 +34,7 @@ def get_smiling_split(training_labels, testing_labels):
     print('Testing split: {} smiling, {} not smiling'.format(smiling_testing, not_smiling_testing))
 
 def get_model_params(x_train, y_train, x_test, y_test):
-    """Set optimals SVM parameters 
+    """Finds optimal SVM parameters 
 
     Utilises Sklearn GridSearch to find optimal SVM paramters using lists of 
     provided parameters
@@ -65,7 +65,7 @@ def get_model_params(x_train, y_train, x_test, y_test):
     return
 
 def A2_SVM(x_train, y_train, x_test, y_test):
-    """Retuns prediction using provided data and SVM classifier for task A1
+    """Retuns prediction using provided data and SVM classifier for task A2
 
     Args:
         x_train: Array of training data
