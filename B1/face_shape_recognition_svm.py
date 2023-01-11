@@ -78,7 +78,7 @@ def SVM(x_train, y_train, x_test, y_test):
 def run_classifier():
     x_train, y_train = hog_extraction.get_labels(basedir, train_images_dir, train_labels_filename, testing=False)
     x_test, y_test = hog_extraction.get_labels(basedir, test_images_dir, test_labels_filename, testing=True)
-    get_label_split(y_train, isTrue)
+    get_label_split(y_train, True)
     get_label_split(y_test, False)
     # get_model_params(x_train, y_train, x_test, y_test)
     SVM(x_train, y_train, x_test, y_test)

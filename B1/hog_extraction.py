@@ -3,6 +3,7 @@ from keras.preprocessing import image
 import cv2
 import numpy as np
 from skimage.feature import hog
+import matplotlib.pyplot as plt
 
 def get_filename(line):
     split = line.split('\t')
@@ -32,7 +33,7 @@ def get_labels(basedir, images_dir, labels_filename, testing):
             img_data = hog(img_data, orientations=9, pixels_per_cell=(8,8))
             all_features.append(img_data)
             all_labels.append(face_shape_labels[file_name])
-              
+            
             progress = round((idx+1)/(len(image_paths)+1)*100, 1)
             if progress % 5 == 0:
                 print('Progress = {}'.format(progress))

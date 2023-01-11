@@ -56,13 +56,13 @@ def process_data(x_train, y_train, x_test, test_size):
 
 def get_ann():
     model = keras.Sequential()
-    model.add(keras.layers.Flatten(input_shape=(125,125,1)))
+    model.add(keras.layers.Flatten(input_shape=(125,125,3)))
     model.add(keras.layers.Dense(5, activation='softmax'))
     return model
 
 def get_cnn():
     model = keras.Sequential()
-    model.add(keras.layers.Conv2D(filters=32, kernel_size=(3,3), activation='relu', input_shape=(125,125,1)))
+    model.add(keras.layers.Conv2D(filters=32, kernel_size=(3,3), activation='relu', input_shape=(125,125,3)))
     model.add(keras.layers.MaxPooling2D((2,2)))
     model.add(keras.layers.Flatten())
     model.add(keras.layers.Dropout(0.5))
