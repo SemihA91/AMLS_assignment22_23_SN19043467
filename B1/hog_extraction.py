@@ -6,16 +6,41 @@ from skimage.feature import hog
 import matplotlib.pyplot as plt
 
 def get_filename(line):
+    """Gets filename from line of CSV
+
+    Args:
+        line: line from CSV
+    Returns:
+        filename: string representing filename of images 
+    """
     split = line.split('\t')
     filename = split[-1]
     return filename
 
 def get_face_shape_label(line):
+    """Gets face shape label from line of CSV
+    Args:
+        line: line from CSV
+    Returns:
+        filename: int from 0 to 4 indicating face shape class
+
+    """
     split = line.split('\t')
     shape = split[-2]
     return shape
 
 def get_labels(basedir, images_dir, labels_filename, testing):
+    """Returns image data and labels from dataset
+    Args:
+        basedir: base directory of images
+        images_dir: directory of images
+        labels_filename: directory of file containing labels for images
+        testing: boolean denoting whether data is test or train data
+    Returns:
+        all_features: numpy array of image data
+        all_labels: numpy array of image labels 
+
+    """
     image_paths = [os.path.join(images_dir, l) for l in os.listdir(images_dir)]
     target_size = None
     labels_file = open(os.path.join(basedir, labels_filename), 'r')

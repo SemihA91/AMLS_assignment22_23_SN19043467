@@ -8,9 +8,6 @@ from sklearn.model_selection import GridSearchCV
 import numpy as np
 from sklearn.inspection import DecisionBoundaryDisplay
 
-
-
-
 basedir = './Datasets'
 train_images_dir = os.path.join(basedir,'cartoon_set\img')
 train_labels_filename = 'cartoon_set\labels.csv'
@@ -19,6 +16,13 @@ test_images_dir = os.path.join(basedir, 'cartoon_set_test\img')
 test_labels_filename = 'cartoon_set_test\labels.csv'
 
 def get_label_split(labels, is_training):
+    """Prints number of files from each class
+
+    Args:
+        labels: list of labels for data
+        is_training: boolean denoting whether data is the training data
+    Returns: None
+    """
     zero = np.sum(labels == 0)
     one = np.sum(labels == 1)
     two = np.sum(labels == 2)
@@ -76,6 +80,8 @@ def SVM(x_train, y_train, x_test, y_test):
     print(cm)
 
 def run_classifier():
+    """Runs classifier for task B1
+    """
     x_train, y_train = hog_extraction.get_labels(basedir, train_images_dir, train_labels_filename, testing=False)
     x_test, y_test = hog_extraction.get_labels(basedir, test_images_dir, test_labels_filename, testing=True)
     get_label_split(y_train, True)
