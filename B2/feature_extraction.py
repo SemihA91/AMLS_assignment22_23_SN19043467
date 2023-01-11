@@ -6,16 +6,41 @@ from PIL import Image
 from sklearn.cluster import KMeans
 
 def get_filename(line):
+    """Gets filename from line of CSV
+
+    Args:
+        line: line from CSV
+    Returns:
+        filename: string representing filename of images 
+    """
     split = line.split('\t')
     filename = split[-1]
     return filename
 
 def get_eye_colour_label(line):
+    """Eye colour label from line of CSV
+    Args:
+        line: line from CSV
+    Returns:
+        filename: int from 0 to 4 indicating eye colour class
+
+    """
     split = line.split('\t')
     shape = split[1]
     return shape
 
 def get_labels(basedir, images_dir, labels_filename, testing):
+    """Returns image data and labels from dataset
+    Args:
+        basedir: base directory of images
+        images_dir: directory of images
+        labels_filename: directory of file containing labels for images
+        testing: boolean denoting whether data is test or train data
+    Returns:
+        all_features: numpy array of image data
+        all_labels: numpy array of image labels 
+
+    """
     image_paths = [os.path.join(images_dir, l) for l in os.listdir(images_dir)]
     target_size = None
     labels_file = open(os.path.join(basedir, labels_filename), 'r')
@@ -29,24 +54,8 @@ def get_labels(basedir, images_dir, labels_filename, testing):
             file_name= img_path.split('\\')[-1]
             img_data = cv2.imread(img_path)
             img_data = cv2.resize(img_data, (125,125))
-            # img_data = cv2.cvtColor(img_data, cv2.COLOR_BGR2GRAY)
-            # reshaped = img_data.reshape((-1, 3))
-            # if idx >5 and idx < 10:
-            #     print(file_name)
-            #     kmeans = KMeans(n_clusters=7, random_state=1).fit(reshaped)
-            #     labels = kmeans.labels_
-            #     centers = kmeans.cluster_centers_
-            #     img = centers[labels].reshape(img_data.shape).astype('uint8')
-            #     cv2.imshow('test', img)
-            #     cv2.waitKey(0)
-            #     cv2.destroyAllWindows()
-            
-            # elif idx > 10:
-            #     break
-
             all_features.append(img_data)
             all_labels.append(eye_colour_labels[file_name])
-              
             progress = round((idx+1)/(len(image_paths)+1)*100, 1)
             if progress % 5 == 0:
                 print('Progress = {}'.format(progress))
