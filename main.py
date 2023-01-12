@@ -12,14 +12,14 @@ def create_datasets_dir():
 
 def main():
     create_datasets_dir()
-    #a1.run_classifier()
-    #a2.run_classifier() 
+    a1.run_classifier()
+    a2.run_classifier() 
        
     # a3_nn.run_classifier() # Can uncomment to test neural network for B1
-    a3_hog_svm.run_classifier()
     
-    # a4.run_classifier()
-    # a4.nn_classifier()
+    a3_hog_svm.run_classifier()
+    a4.run_classifier()
+
 
 if __name__ == "__main__":
     main()

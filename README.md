@@ -24,8 +24,6 @@ In the case that a Conda enviornment is not used, the required packages and depe
 - keras
 - tensorflow
 - scikit-image
-- seaborn
-- Pillow
 - dlib
 
 # File Structure and Roles
@@ -36,10 +34,10 @@ For this assignment, each task is separated into its own respective directory wi
 
 This directory contains the code for task A1 and is contains two code files and a pre-trained model used for feature extraction:
 
- - [gender_landmarks.py](A1/gender_landmarks.py) - Performs feature and label extraction on celeba dataset, based of dlib implementation of paper referenced in report - also utilises some modified code from wk6 lab
- - [gender_detection.py](A1/gender_detection.py) - Contains the code to run the SVM classifier for gender classification
- - [shape_predictor_68_face_landmarks.dat](A1/shape_predictor_68_face_landmarks.dat) - pre -trained facial detector model to detect coordinates of 68 facial landmarks 
-
+- [gender_landmarks.py](A1/gender_landmarks.py) - Performs feature and label extraction on celeba dataset, based of dlib implementation of paper referenced in report - also utilises some modified code from wk6 lab
+- [gender_detection.py](A1/gender_detection.py) - Contains the code to run the SVM classifier for gender classification
+- [shape_predictor_68_face_landmarks.dat](A1/shape_predictor_68_face_landmarks.dat) - pre -trained facial detector model to detect coordinates of 68 facial landmarks 
+- [confusion_mat.png](A1/confusion_mat.png) - Confusion matrix results for the classifier in image form
  ## A2 - Binary Emotion Detection
 
 This directory contains the code for task A2 and contains two code files and a pre-trained model used for feature extraction:
@@ -47,6 +45,8 @@ This directory contains the code for task A2 and contains two code files and a p
 - [smile_landmarks.py](A2/smile_landmarks.py) - Performs feature extraction and label extraction based from celeba dataset, based off dlib implementation of paper referenced in report - also utilises some modified code from wk6 lab
 - [emotion_detection.py](A2/emotion_detection.py) - Contains code to run SVM classifier for emotion detection
 - [shape_predictor_68_face_landmarks.dat](A2/shape_predictor_68_face_landmarks.dat) - pre -trained facial detector model to detect coordinates of 68 facial landmarks 
+- [confusion_mat.png](A2/confusion_mat.png) - Confusion matrix results for the classifier in image form
+
 
 ## B1 - 5 Class Facial Shape Classification
 
@@ -55,10 +55,18 @@ This directory contains four code files for B1 of which **two are for the final 
 ### Final Optimised Solution:
 - [face_shape_recognition_svm.py](B1/face_shape_recognition_svm.py) - Utilise HOG features and linear SVM for 5 class face shape classification
 - [hog_extraction.py](B1/hog_extraction.py) - Extracts HOG features and labels from cartoon dataset to be used for linear SVM classifier
+- [confusion_mat.png](B1/confusion_mat.png) - Confusion matrix results for the classifier in image form
 
 ### Alternate Un-Optimised Solution
 
 - [face_shape_recognition_nn.py](B1/face_shape_recognition_nn.py) - Testing of ANN and CNN for face shape classification. Model performed poorly and HOG + SVM was used instead.
 - [feature_extraction.py](B1/feature_extraction.py) - Extracts image data and labels from cartoon dataset to be used with neural networks.
+- [confusion_mat.png](B1/confusion_mat.png) - Confusion matrix results for the classifier in image form
+
 
 ## B2
+- [eye_colour_recognition.py](B2/eye_colour_recognition.py) - Code to implement CNN for eye colour classification
+- [feature_extraction.py](B2/feature_extraction.py) - Extracts image data and labels from cartoon dataset to be used with neural networks.
+- [confusion_mat.png](B2/confusion_mat.png) - Confusion matrix results for the classifier in image form
+- [accuracy.png](B2/accuracy.png) - Graph of training accuracy over epochs of CNN
+- [losses.png](B2/losses.png) - Graph of training loss over epochs of CNN.

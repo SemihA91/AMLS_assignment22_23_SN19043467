@@ -2,7 +2,7 @@ from B1 import hog_extraction
 import os
 import matplotlib.pyplot as plt
 import tensorflow as tf
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, ConfusionMatrixDisplay
 from sklearn.svm import SVC, LinearSVC
 from sklearn.model_selection import GridSearchCV
 import numpy as np
@@ -77,6 +77,10 @@ def SVM(x_train, y_train, x_test, y_test):
     print("\nAccuracy:", accuracy_score(y_test, pred))
     print('Classification report\n', classification_report(y_test, pred, zero_division=0, digits=6))
     cm = confusion_matrix(y_test, pred)
+    # tn, fp, fn, tp = cm.ravel()
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=classifier.classes_)
+    disp.plot()
+    plt.savefig('B1/confusion_mat.png')
     print(cm)
 
 def run_classifier():
@@ -86,7 +90,7 @@ def run_classifier():
     x_test, y_test = hog_extraction.get_labels(basedir, test_images_dir, test_labels_filename, testing=True)
     get_label_split(y_train, True)
     get_label_split(y_test, False)
-    # get_model_params(x_train, y_train, x_test, y_test)
+    # get_model_params(x_train, y_train, x_test, y_test) # CAN UNCOMMENT TO GET MODEL PARAMETERS WITH GRIDSEARCH
     SVM(x_train, y_train, x_test, y_test)
 
     return

@@ -137,3 +137,9 @@ Datasets/gender_df.csv
 
 # Test File
 test.py
+
+# Data saves
+A1/test_data.json
+A1/training_data.json
+A2/test_data.json
+A2/training_data.json

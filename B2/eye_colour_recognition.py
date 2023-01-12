@@ -2,10 +2,7 @@ from B2 import feature_extraction
 import os
 import matplotlib.pyplot as plt
 import tensorflow as tf
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
-from sklearn.svm import SVC, LinearSVC
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
 import numpy as np
 import keras
 from sklearn.model_selection import train_test_split
@@ -20,6 +17,13 @@ test_labels_filename = 'cartoon_set_test\labels.csv'
 
 
 def plot_performance(history):
+    """Plots the training and validation accuracy and losses of classifier
+
+    Args:
+        history: Keras model history
+    Returns:
+        None
+    """
     plt.figure()
     plt.plot(history.history['accuracy'])
     plt.plot(history.history['val_accuracy'])
@@ -37,6 +41,12 @@ def plot_performance(history):
     plt.savefig('B2/losses.png')
 
 def get_label_split(labels, is_training):
+    """Prints the number of samples from each class
+
+    Args:
+        labels: array of labels for data
+        is_training: boolean to denote whether data is for training
+    """
     zero = np.sum(labels == 0)
     one = np.sum(labels == 1)
     two = np.sum(labels == 2)
@@ -49,68 +59,31 @@ def get_label_split(labels, is_training):
     
     return
 
-def get_model_params(x_train, y_train, x_test, y_test):
-    """Finds optimal SVM parameters 
-
-    Utilises Sklearn GridSearch to find optimal SVM paramters using lists of 
-    provided parameters
-
-    Args:
-        x_train: Array of training data
-        y_train: Array of training labels
-        x_test: Array of test data
-        y_test: Array of test labels to compare model against
-    """
-    classifier = KNeighborsClassifier()
-    param_grid = {'n_neighbors': [100, 500, 1000]}
-  
-    grid = GridSearchCV(classifier, param_grid, refit = True, verbose = 3)
-    grid.fit(x_train, y_train)
-
-    grid_predictions = grid.predict(x_test)
-    print(classification_report(y_test, grid_predictions, digits=6))
-    print(grid.best_params_)
-    print(grid.best_estimator_)
-    return
-
-
 def run_classifier():
+    """Runs CNN classifier
+    """
     x_train, y_train = feature_extraction.get_labels(basedir, train_images_dir, train_labels_filename, testing=False)
     x_test, y_test = feature_extraction.get_labels(basedir, test_images_dir, test_labels_filename, testing=True)
 
-    # feature_extraction.get_labels(basedir, train_images_dir, train_labels_filename, testing=False)
-    # x_train, x_validation, y_train, y_validation = train_test_split(x_train, y_train, test_size=0.2, random_state=1, stratify=y_train)
-    # x_train = np.array(x_train)/255
-    # x_test = np.array(x_test)/255
-    # x_validaton = np.array(x_validation)/255
-
-    x_train = x_train.reshape(x_train.shape[0], 125*125*3)
-    x_test = x_test.reshape(x_test.shape[0], 125*125*3)
-
-    # get_model_params(x_train, y_train, x_test, y_test)
-    print('CLASSIFYING')
-    model = KNeighborsClassifier(n_neighbors=5000)
-    model.fit(x_train, y_train)
-
-    pred = model.predict(x_test)
-    print(classification_report(y_test, pred))
-    print(confusion_matrix(y_test, pred))
-    return
-
-def nn_classifier():
-    x_train, y_train = feature_extraction.get_labels(basedir, train_images_dir, train_labels_filename, testing=False)
-    x_test, y_test = feature_extraction.get_labels(basedir, test_images_dir, test_labels_filename, testing=True)
-
+    get_label_split(y_train, True)
+    get_label_split(y_test, False)
     x_train, x_validation, y_train, y_validation = train_test_split(x_train, y_train, test_size=0.2, random_state=1, stratify=y_train)
 
+    # Normalising the pixel values
+    x_train = x_train/255
+    x_test = x_test/255
+    x_validation = x_validation/255
+
+    
+    FILTERS = 8
     model = keras.Sequential()
-    model.add(keras.layers.Conv2D(filters=8, kernel_size=(2,2), activation='relu', input_shape=(125,125, 3)))
+    model.add(keras.layers.Conv2D(filters=FILTERS, kernel_size=(3,3), activation='relu', input_shape=(125,125, 3)))
     model.add(keras.layers.MaxPooling2D((2,2)))
     model.add(keras.layers.Flatten(input_shape=(125,125,3)))
     model.add(keras.layers.Dense(5, activation='softmax'))
 
     model.compile(
-        optimizer=keras.optimizers.Adam(learning_rate=0.01),
+        optimizer=keras.optimizers.Adam(learning_rate=0.001),
         loss='sparse_categorical_crossentropy',
         metrics=['accuracy']
     )
@@ -121,13 +94,10 @@ def nn_classifier():
     plot_performance(hist)
     test_error, test_accuracy = model.evaluate(x_test, y_test, verbose=1)
     print('Test error: {}, Test accuracy: {}'.format(test_error, test_accuracy))
-    confusion_matrix = tf.math.confusion_matrix(labels=y_test, predictions=predicted_labels)
-    print(confusion_matrix)
-    
-
-
-    print('Classificaton Report: \n', classification_report(y_test, predicted_labels))
-    plt.figure()
-    sns.heatmap(confusion_matrix, annot=True)
-    plt.show()
+    print('Classificaton Report: \n', classification_report(y_test, predicted_labels, digits=6))
+    print('Filters: {}'.format(FILTERS))
+    cm = confusion_matrix(y_test, predicted_labels)
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['0', '1', '2', '3', '4'])
+    disp.plot()
+    plt.savefig('B2/confusion_mat.png') 
     return

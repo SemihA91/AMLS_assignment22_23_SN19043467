@@ -13,8 +13,6 @@ dependencies:
     - keras
     - tensorflow
     - scikit-image
-    - seaborn
-    - Pillow
 
   - conda:
     - dlib

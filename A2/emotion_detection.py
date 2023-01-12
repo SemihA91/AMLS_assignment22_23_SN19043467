@@ -1,7 +1,7 @@
 from . import smile_landmarks
 import os
 import numpy as np
-from sklearn.metrics import confusion_matrix, classification_report, accuracy_score
+from sklearn.metrics import confusion_matrix, classification_report, accuracy_score, ConfusionMatrixDisplay
 from sklearn.svm import SVC
 import matplotlib.pyplot as plt
 import json
@@ -81,7 +81,11 @@ def A2_SVM(x_train, y_train, x_test, y_test):
     pred = classifier.predict(x_test)
     print("\nAccuracy:", accuracy_score(y_test, pred))
     print('Classification report\n', classification_report(y_test, pred, zero_division=0, digits=6))
-    tn, fp, fn, tp = confusion_matrix(y_test, pred).ravel()
+    cm = confusion_matrix(y_test, pred)
+    tn, fp, fn, tp = cm.ravel()
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=classifier.classes_)
+    disp.plot()
+    plt.savefig('A2/confusion_mat.png')
     print('True Negatives: {}, False Positives: {}, False Negatives: {}, True Positives: {} '.format(tn, fp, fn, tp))
     return pred
 
